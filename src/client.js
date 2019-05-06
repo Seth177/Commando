@@ -71,16 +71,18 @@ class CommandoClient extends discord.Client {
 			this.once('ready', () => {
 				if(options.owner instanceof Array || options.owner instanceof Set) {
 					for(const owner of options.owner) {
-						this.users.fetch(owner).catch(err => {
-							this.emit('warn', `Unable to fetch owner ${owner}.`);
-							this.emit('error', err);
-						});
+						let user = this.users.find(owner => owner.id == owner);
+						if (user == undefined) {
+							this.emit('warn', `Unable to find owner ${owner}.`);
+							this.emit('error', 'Invalid Owner UserID');
+						}
 					}
 				} else {
-					this.users.fetch(options.owner).catch(err => {
-						this.emit('warn', `Unable to fetch owner ${options.owner}.`);
-						this.emit('error', err);
-					});
+					let user = this.users.find(owner => owner.id == options.owner);
+					if (user == undefined) {
+						this.emit('warn', `Unable to find owner ${owner}.`);
+						this.emit('error', 'Invalid Owner UserID');
+					}
 				}
 			});
 		}
